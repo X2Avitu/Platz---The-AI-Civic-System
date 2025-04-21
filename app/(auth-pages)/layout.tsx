@@ -1,9 +1,21 @@
-export default async function Layout({
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+
+export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="max-w-7xl flex flex-col gap-12 items-start">{children}</div>
+    <>
+      <Navbar />
+      <div className="pt-16">
+        {children}
+      </div>
+      <Footer />
+    </>
   );
 }
+
+
+// app layout

@@ -4,6 +4,7 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { v4 as uuidv4 } from 'uuid';
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -130,5 +131,56 @@ export const resetPasswordAction = async (formData: FormData) => {
 export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return redirect("/sign-in");
+  return redirect("/home");
 };
+
+export async function getParties(){
+  const supabase = await createClient();
+  const { data: Public, error } = await supabase
+  .from('Public')
+  .select('*')
+  return Public
+}
+
+export async function createParty(data: { 
+  name: string; 
+  description: string;
+  lat: number; 
+  lng: number;
+}): Promise<any> {
+  const supabase = await createClient();
+  
+  // Get current user
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    throw new Error("You must be logged in to create a party");
+  }
+  
+  // Generate a random color (hex format)
+  const colors = ["#f43f5e", "#8b5cf6", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"]
+  const randomColor = colors[Math.floor(Math.random() * colors.length)]
+
+  const { data: insertedData, error } = await supabase
+    .from('Public')
+    .insert([
+      { 
+        id: uuidv4(),
+        name: data.name,
+        description: data.description,
+        lat: data.lat,
+        lng: data.lng,
+        attendees: 1, // Creator is the first attendee
+        color: randomColor,
+        createdAt: new Date().toISOString(),
+        user: user.id, // Set to current user's ID
+      }
+    ])
+    .select();
+  
+  if (error) {
+    console.error("Error creating party:", error);
+    throw error;
+  }
+  return insertedData;
+}
