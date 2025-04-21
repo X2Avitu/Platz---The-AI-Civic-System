@@ -53,7 +53,14 @@ export function PartyList({ parties, joinParty }: PartyListProps) {
                     </div>
                   </div>
                 </div>
-                <Button size="sm" variant="outline" onClick={() => joinParty(party.id)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    console.log("Selected party:", party);
+                    joinParty(party.id);
+                  }}
+                >
                   Join
                 </Button>
               </div>

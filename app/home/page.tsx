@@ -120,99 +120,98 @@ import { FeaturesSectionDemo } from "@/components/feature-section"; // Assuming 
 import { WobbleCard  } from "@/components/ui/wobble-card"; // Ensure WobbleCardDemo is a named export in the module
 import { MapPin, Users, Calendar, Sparkles, Globe, Shield } from "lucide-react"
 // --- Main Page Component Definition ---
-
+import { motion } from "framer-motion";
 export function WobbleCardDemo() {
+  const cardVariants = {
+    initial: { opacity: 0, y: 40, scale: 0.95 },
+    animate: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { delay: i * 0.08, duration: 1, type: "ease-in" }
+    }),
+    whileHover: { scale: 1.04, boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }
+  };
+
+  const features = [
+    {
+      icon: <MapPin className="w-6 h-6 text-emerald-600" />,
+      bg: "bg-emerald-100",
+      title: "Interactive Map",
+      desc: "Visualize parties around you with our interactive map. Easily spot events in your neighborhood or explore new areas."
+    },
+    {
+      icon: <Sparkles className="w-6 h-6 text-purple-600" />,
+      bg: "bg-purple-100",
+      title: "Create Parties",
+      desc: "Host your own gatherings with just a few clicks. Set a location, add details, and watch as people join your event."
+    },
+    {
+      icon: <Users className="w-6 h-6 text-blue-600" />,
+      bg: "bg-blue-100",
+      title: "Join Events",
+      desc: "Find parties that match your interests and join with a single click. Connect with like-minded people in your community."
+    },
+    {
+      icon: <Globe className="w-6 h-6 text-amber-600" />,
+      bg: "bg-amber-100",
+      title: "Discover Anywhere",
+      desc: "Whether you're at home or traveling, find exciting events happening around you. Explore new experiences wherever you go."
+    },
+    {
+      icon: <Calendar className="w-6 h-6 text-red-600" />,
+      bg: "bg-red-100",
+      title: "Real-time Updates",
+      desc: "Get instant notifications when people join your events or when new parties are created in your area of interest."
+    },
+    {
+      icon: <Shield className="w-6 h-6 text-indigo-600" />,
+      bg: "bg-indigo-100",
+      title: "Safe & Secure",
+      desc: "Our platform prioritizes user safety with verified locations and community moderation to ensure quality experiences."
+    }
+  ];
+
   return (
-    <section className="py-20 ">
-    <div className="container mx-auto px-4">
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">
-          Discover & Join Parties
-          <span className="text-emerald-500"> Anywhere</span>
-        </h2>
-        <p className="text-lg text-gray-600">
-          Create, discover, and join exciting events in your area. Party Finder connects people through shared
-          experiences and memorable gatherings.
-        </p>
-      </div>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Feature 1 */}
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mb-6">
-            <MapPin className="w-6 h-6 text-emerald-600" />
-          </div>
-          <h3 className="text-xl font-bold mb-3">Interactive Map</h3>
-          <p className="text-gray-600">
-            Visualize parties around you with our interactive map. Easily spot events in your neighborhood or explore
-            new areas.
+    <div className="relative mx-auto my-10 flex max-w-7xl flex-col items-center justify-center">
+      <div className="px-4 py-10 md:py-20 w-full">
+        <motion.div
+          initial={{ opacity: 0, filter: "blur(4px)", y: 20 }}
+          animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            Discover & Join Parties
+            <span className="text-emerald-500"> Anywhere</span>
+          </h2>
+          <p className="text-lg text-gray-600">
+            Create, discover, and join exciting events in your area. Party Finder connects people through shared
+            experiences and memorable gatherings.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Feature 2 */}
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
-            <Sparkles className="w-6 h-6 text-purple-600" />
-          </div>
-          <h3 className="text-xl font-bold mb-3">Create Parties</h3>
-          <p className="text-gray-600">
-            Host your own gatherings with just a few clicks. Set a location, add details, and watch as people join
-            your event.
-          </p>
-        </div>
-
-        {/* Feature 3 */}
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
-            <Users className="w-6 h-6 text-blue-600" />
-          </div>
-          <h3 className="text-xl font-bold mb-3">Join Events</h3>
-          <p className="text-gray-600">
-            Find parties that match your interests and join with a single click. Connect with like-minded people in
-            your community.
-          </p>
-        </div>
-
-        {/* Feature 4 */}
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mb-6">
-            <Globe className="w-6 h-6 text-amber-600" />
-          </div>
-          <h3 className="text-xl font-bold mb-3">Discover Anywhere</h3>
-          <p className="text-gray-600">
-            Whether you're at home or traveling, find exciting events happening around you. Explore new experiences
-            wherever you go.
-          </p>
-        </div>
-
-        {/* Feature 5 */}
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-6">
-            <Calendar className="w-6 h-6 text-red-600" />
-          </div>
-          <h3 className="text-xl font-bold mb-3">Real-time Updates</h3>
-          <p className="text-gray-600">
-            Get instant notifications when people join your events or when new parties are created in your area of
-            interest.
-          </p>
-        </div>
-
-        {/* Feature 6 */}
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
-            <Shield className="w-6 h-6 text-indigo-600" />
-          </div>
-          <h3 className="text-xl font-bold mb-3">Safe & Secure</h3>
-          <p className="text-gray-600">
-            Our platform prioritizes user safety with verified locations and community moderation to ensure quality
-            experiences.
-          </p>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, i) => (
+            <motion.div
+              key={feature.title}
+              className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+              variants={cardVariants}
+              initial="initial"
+              animate="animate"
+              whileHover="whileHover"
+              custom={i}
+            >
+              <div className={`w-12 h-12 ${feature.bg} rounded-lg flex items-center justify-center mb-6`}>
+                {feature.icon}
+              </div>
+              <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+              <p className="text-gray-600">{feature.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </div>
-
-  
     </div>
-  </section>
   );
 }
 export default function Home() {

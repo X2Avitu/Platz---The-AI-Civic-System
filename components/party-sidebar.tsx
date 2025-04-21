@@ -10,10 +10,11 @@ interface PartySidebarProps {
   joinParty: (partyId: string) => void
   openModal: () => void
   selectedPartyId: string | null
+  selectedPartyCoordinates?: { lat: number; lng: number } | null
   onPartySelect: (partyId: string) => void
 }
 
-export function PartySidebar({ parties, joinParty, openModal, selectedPartyId, onPartySelect }: PartySidebarProps) {
+export function PartySidebar({ parties, joinParty, openModal, selectedPartyId, selectedPartyCoordinates, onPartySelect }: PartySidebarProps) {
   // Sort parties by creation date (newest first)
   const sortedParties = [...parties].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
@@ -41,7 +42,14 @@ export function PartySidebar({ parties, joinParty, openModal, selectedPartyId, o
                 className={`p-4 cursor-pointer transition-colors ${
                   selectedPartyId === party.id ? "bg-muted" : "hover:bg-muted/50"
                 }`}
-                onClick={() => onPartySelect(party.id)}
+                onClick={() => {
+                // Removed misplaced console.log
+                console.log(selectedPartyId, party.id)
+                const params = new URLSearchParams(window.location.search);
+                params.set("selectedPartyId", party.id);
+                window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
+              
+              }}
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -67,6 +75,7 @@ export function PartySidebar({ parties, joinParty, openModal, selectedPartyId, o
                     onClick={(e) => {
                       e.stopPropagation()
                       joinParty(party.id)
+                      
                     }}
                   >
                     Join
