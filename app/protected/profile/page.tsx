@@ -198,10 +198,10 @@ function DashboardContent() {
       </div>
       
       <Tabs defaultValue="created" className="w-full">
-        <TabsList className="mb-6">
-          <TabsTrigger value="created">My Parties ({createdParties.length})</TabsTrigger>
-          <TabsTrigger value="joined">Joined Parties ({joinedParties.length})</TabsTrigger>
-        </TabsList>
+      <TabsList className="mb-6">
+  <TabsTrigger value="created">My Parties ({createdParties.length})</TabsTrigger>
+  <TabsTrigger value="joined">Joined Parties ({joinedPartiesData.length})</TabsTrigger>
+</TabsList>
 
         <TabsContent value="created">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

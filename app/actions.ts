@@ -302,3 +302,38 @@ export async function getJoinedParties(){
   console.log("Parties created by user:", parties);
   return parties;
 }
+
+export async function joinParty(partyId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  // Fetch the current party data
+  const { data: party, error: fetchError } = await supabase
+    .from('Public')
+    .select("attendees, number_attendees")
+    .eq('id', partyId)
+    .single();
+
+  if (fetchError || !party) {
+    console.error("Error fetching party data:", fetchError);
+    return null;
+  }
+
+  // Add the user to the attendees list
+  const { error } = await supabase
+    .from('Public')
+    .update({ 
+      attendees: [...party.attendees, user.id], // Add the user ID to the attendees array
+      number_attendees: party.number_attendees + 1 // Increment the number of attendees
+    })
+    .eq('id', partyId);
+
+  if (error) {
+    console.error("Error joining party:", error);
+    return null;
+  }
+  console.log("Joined party:", partyId);
+  return true;
+}
