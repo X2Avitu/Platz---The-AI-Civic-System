@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Plus, Users, Calendar } from "lucide-react"
 import type { Party } from "../types/party"
+import { joinPartyWithID } from "@/app/actions"
 
 interface PartySidebarProps {
   parties: Party[]
@@ -74,7 +75,8 @@ export function PartySidebar({ parties, joinParty, openModal, selectedPartyId, s
                     variant="outline"
                     onClick={(e) => {
                       e.stopPropagation()
-                      joinParty(party.id)
+                      console.log("JOINING PARTY:", party)  
+                      joinPartyWithID(party.id)
                       
                     }}
                   >

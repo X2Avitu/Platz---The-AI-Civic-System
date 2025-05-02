@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import type { Party } from "../types/party"
 import { Users, Calendar } from "lucide-react"
-import { getParties } from "@/app/actions";
+import { joinPartyWithID } from "@/app/actions";
 
 interface PartyListProps {
   parties: Party[]
@@ -57,8 +57,8 @@ export function PartyList({ parties, joinParty }: PartyListProps) {
                   size="sm"
                   variant="outline"
                   onClick={() => {
-                    console.log("Selected party:", party);
-                    joinParty(party.id);
+                    console.log("JOINING PARTY:", party);
+                    joinPartyWithID(party.id);
                   }}
                 >
                   Join

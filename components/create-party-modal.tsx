@@ -30,6 +30,7 @@ export function CreatePartyModal({
   defaultLocation = false,
 }: CreatePartyModalProps) {
   const [useCurrentLocation, setUseCurrentLocation] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
 
   const {
@@ -46,19 +47,20 @@ export function CreatePartyModal({
     },
   })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     if (!userLocation && useCurrentLocation) return
-
+  
     const location = useCurrentLocation
       ? userLocation!
       : { lat: Number.parseFloat(data.customLat), lng: Number.parseFloat(data.customLng) }
-
+  
     // Generate a random color for the party marker
     const colors = ["#f43f5e", "#8b5cf6", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"]
     const randomColor = colors[Math.floor(Math.random() * colors.length)]
-
-    const newParty: Party = {
-      id: uuidv4(),
+  
+    // Create a client-side party object for immediate UI update
+    const clientParty: Party = {
+      id: uuidv4(), // Temporary ID that will be replaced by the server
       name: data.name,
       description: data.description,
       lat: location.lat,
@@ -66,20 +68,48 @@ export function CreatePartyModal({
       attendees: 1, // Creator is the first attendee
       color: randomColor,
       createdAt: new Date().toISOString(),
-      user: null, // Assuming you want to set this later
+      user: null, // This will be set by the server
     }
-    createParty(newParty) // Assuming you have a function to create the party in your database
-    
-    addParty(newParty)
-    toast({
+  
+    try {
+      setIsSubmitting(true)
+      
+      // Update client state immediately for responsive UI
+      addParty(clientParty)
+      
+      // Create the party on the server
+      const serverParty = await createParty({
+        name: data.name,
+        description: data.description,
+        lat: location.lat,
+        lng: location.lng,
+      })
+      
+      // If server creation was successful, show success message
+      toast({
         title: "Party Created Successfully",
-        description: "Your party has been created:" + data.name,
-        duration: 2000,
+        description: `Your party "${data.name}" has been created!`,
+        duration: 3000,
         action: (
-          <ToastAction altText="">Undo</ToastAction>
+          <ToastAction altText="Dismiss notification">Dismiss</ToastAction>
         ),
       })
-    reset()
+      
+      // Close modal and reset form
+      reset()
+      onClose()
+      
+    } catch (error) {
+      console.error("Error creating party:", error)
+      
+      toast({
+        title: "Error Creating Party",
+        description: "There was a problem creating your party. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleClose = () => {
@@ -177,10 +207,12 @@ export function CreatePartyModal({
           )}
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose}>
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit">Create Party</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Creating..." : "Create Party"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

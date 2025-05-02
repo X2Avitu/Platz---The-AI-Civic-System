@@ -303,11 +303,12 @@ export async function getJoinedParties(){
   return parties;
 }
 
-export async function joinParty(partyId: string) {
+// Make sure you have this export statement
+export async function joinPartyWithID(partyId: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) return null;
+  if (!user) return { success: false, error: "Not authenticated" };
 
   // Fetch the current party data
   const { data: party, error: fetchError } = await supabase
@@ -318,22 +319,31 @@ export async function joinParty(partyId: string) {
 
   if (fetchError || !party) {
     console.error("Error fetching party data:", fetchError);
-    return null;
+    return { success: false, error: fetchError };
+  }
+
+  // Ensure attendees is an array
+  const currentAttendees = Array.isArray(party.attendees) ? party.attendees : [];
+  
+  // Check if user is already in the attendees list
+  if (currentAttendees.includes(user.id)) {
+    console.log("User already joined this party");
+    return { success: true, alreadyJoined: true };
   }
 
   // Add the user to the attendees list
   const { error } = await supabase
     .from('Public')
     .update({ 
-      attendees: [...party.attendees, user.id], // Add the user ID to the attendees array
-      number_attendees: party.number_attendees + 1 // Increment the number of attendees
+      attendees: [...currentAttendees, user.id],
+      number_attendees: (party.number_attendees || 0) + 1
     })
     .eq('id', partyId);
 
   if (error) {
     console.error("Error joining party:", error);
-    return null;
+    return { success: false, error };
   }
-  console.log("Joined party:", partyId);
-  return true;
+  
+  return { success: true, alreadyJoined: false };
 }

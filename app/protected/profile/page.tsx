@@ -122,6 +122,7 @@ function DashboardContent() {
     })
   }, [user.name])
 
+
   useEffect(() => {
     // For each party, fetch its attendees
     parties.forEach(party => {
